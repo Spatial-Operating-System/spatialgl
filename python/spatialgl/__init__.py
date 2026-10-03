@@ -1,6 +1,9 @@
 """SpatialGL: Python scene authoring over the Bazel-built C++ simulation core."""
 from math import pi
-from ._native import (
+import sys
+from bindings.python.spatialgl import _native as _native
+sys.modules.setdefault(__name__ + "._native", _native)
+from bindings.python.spatialgl._native import (
     Backend, DeviceDescriptor, DeviceFrame, DroneBackend, DroneConfig, MonitorBackend, MonitorConfig,
     ObservedOutput, Occluder, Patch, Point, Polyline, ProjectorBackend, ProjectorConfig,
     RealizationState, RealizedSample, Runtime, Sample, SceneFrame, Surface, World, __version__, sample_scene,

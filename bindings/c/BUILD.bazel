@@ -1,0 +1,29 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "capi",
+    srcs = ["spatialgl_capi.cc"],
+    copts = [
+        "-std=c++20",
+        "-DSPATIALGL_CAPI_BUILD",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:optics",
+        "//include/spatialgl/capi:headers",
+    ],
+    alwayslink = True,
+)
+
+# linkshared emits the platform shared-library artifact (libspatialgl_c.so/.dylib).
+cc_binary(
+    name = "spatialgl_c",
+    linkshared = True,
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [":capi"],
+)

@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "backends",
+    srcs = ["legacy_backends.cc"],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:legacy_headers",
+        "//libs/core",
+    ],
+)

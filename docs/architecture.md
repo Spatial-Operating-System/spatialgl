@@ -1,4 +1,6 @@
-# SpatialGL abstraction contract · v0.2
+# SpatialGL compatibility runtime contract · v0.2
+
+이 문서는 기존 `SceneFrame / Backend / RealizationState` API의 호환 계약이다. 새 표면 광학 API의 기본 기능, 정책과 제한은 [core API](core-api.md), C11 경계는 [C API](c-api.md), 모듈 의존성은 [modules](modules.md)를 따른다.
 
 ## 연구 경계
 
@@ -64,7 +66,7 @@ SpatialGL의 입력은 이미 좌표가 정해진 그래픽이다. `highlight(ro
 
 ## 구현·언어 경계
 
-C++20의 `std::variant<Point, Polyline, Patch>`가 primitive 계약이다. DeviceCommand는 RasterCommand / EmitterCommand / ExtensionCommand로 구분한다. C++ 코어는 Python, DOM, 그래픽 라이브러리를 참조하지 않는다. 새 rendering 방식은 C++ Backend를 구현하며 core runtime을 수정할 필요가 없다. 현재 Python은 내장 backend만 노출하고 Python subclass callback은 제공하지 않는다.
+C++20의 `std::variant<Point, Polyline, Patch>`가 primitive 계약이다. DeviceCommand는 RasterCommand / EmitterCommand / ExtensionCommand로 구분한다. C++ 코어는 Python, DOM, 그래픽 라이브러리를 참조하지 않는다. 현재의 독립 sample 평가와 장치별 명령 교체 의미에 맞는 방식은 C++ Backend로 확장할 수 있다. 공동 광학 합성, 공유 액추에이터, 시간·phase가 있는 scan/steering program은 compiler/runtime 계약도 확장해야 한다. `ExtensionCommand`에 payload를 담을 수 있다는 것만으로 이 의미들을 지원하는 것은 아니다. 현재 Python은 내장 backend만 노출하고 Python subclass callback은 제공하지 않는다.
 
 Python에서 `Point`, `Polyline`, `Patch`, `Surface`, `World`, `SceneFrame`을 작성하고 `Runtime.submit()` / `advance()` / `snapshot()`을 호출한다. pybind11을 통해 실제 C++ 구현이 실행된다. 결과는 읽기 전용 관측 타입으로 돌아오고 `to_dict()`로 JSON에 저장할 수 있다. 입력은 값 복사, 결과도 독립 snapshot이며 Python 객체 해제 후에도 runtime은 유효하다.
 
@@ -73,3 +75,7 @@ Bazel 9.2.0, Bzlmod lock, rules_cc, rules_python, pybind11_bazel을 사용한다
 Python demo 서버는 single-threaded loopback HTTPServer로 실행한다. Python이 장면을 생성하고 C++ runtime 호출을 직렬화한다. viewer의 JavaScript는 이미 계산된 목표/관측을 그리며 물리 모델을 구현하지 않는다. static `write_view()`는 Python 관측을 단독 HTML에 담으며 카메라 회전/확대만 가능하다.
 
 코어의 runtime instance는 thread-safe하지 않다. pybind11의 advance/snapshot은 GIL을 해제하므로 다중 Python thread에서 같은 instance를 호출하려면 외부 lock이 필요하다. 서로 다른 instance는 backend 상태를 공유하지 않는다. sample_scene은 한 장면에 최대 100,000 표본의 예산을 적용하고, 과도한 요청은 submit 단계에서 거부한다.
+
+## 다중 기기 coverage 감사 · 후속 설계
+
+[사례와 coverage](cases-and-design-coverage.md)는 문헌/공식 자료 기반 12개 사례와 8개 구성 반례를 대조한다. 현재 계약과 대화에서 제안한 SurfaceTarget / OpenGL형 state만으로 전부 지원할 수는 없다. 공동 contribution, Rig/resource graph, timed program, 시간 정보가 있는 world/calibration, observer/pass/channel, 시간·광량·증거 feedback이 필요한 확장이다. 이 문서의 v0.2 동작을 이미 구현한 것으로 바꾸는 내용은 아니며, 새 계약과 fixture는 제안 단계다.

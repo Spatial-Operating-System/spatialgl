@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+
+cc_binary(
+    name = "hello",
+    srcs = ["hello.c"],
+    copts = [
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+    ],
+    deps = [
+        "//bindings/c:capi",
+        "//include/spatialgl/capi:headers",
+    ],
+)

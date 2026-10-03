@@ -1,0 +1,15 @@
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_python//python:py_library.bzl", "py_library")
+
+py_library(
+    name = "scenario_lib",
+    srcs = ["scenarios.py"],
+    visibility = ["//visibility:public"],
+    deps = ["//python:spatialgl"],
+)
+
+py_binary(
+    name = "scenarios",
+    srcs = ["scenarios.py"],
+    deps = ["//python:spatialgl"],
+)

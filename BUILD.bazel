@@ -2,16 +2,50 @@ load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 cc_library(
-    name = "spatialgl",
-    srcs = ["cpp/src/spatialgl.cc"],
-    hdrs = ["cpp/include/spatialgl/spatialgl.h"],
-    includes = ["cpp/include"],
-    copts = ["-Wall", "-Wextra", "-Wpedantic"],
+    name = "legacy_headers",
+    hdrs = [
+        "cpp/include/spatialgl/spatialgl.h",
+        "include/spatialgl/spatialgl.h",
+    ],
+    includes = [
+        "cpp/include",
+        "include",
+    ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "spatialgl",
+    visibility = ["//visibility:public"],
+    deps = ["//libs/runtime"],
+)
+
+cc_library(
+    name = "optics",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//libs/optics",
+        "//libs/simulation",
+    ],
+)
+
+cc_library(
+    name = "optics_headers",
+    hdrs = ["include/spatialgl/optics.h"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
+
 cc_test(
     name = "core_test",
     size = "small",
     srcs = ["cpp/tests/core_test.cc"],
     deps = [":spatialgl"],
+)
+
+cc_test(
+    name = "optics_test",
+    size = "small",
+    srcs = ["tests/optics/optics_test.cc"],
+    deps = [":optics"],
 )

@@ -1,0 +1,17 @@
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
+
+# Keep the historical Python import path while locating its binding source next
+# to the new optics adapter. The output is consumed by //python:spatialgl.
+pybind_extension(
+    name = "spatialgl/_native",
+    srcs = ["legacy_bindings.cc"],
+    visibility = ["//visibility:public"],
+    deps = ["//:spatialgl"],
+)
+
+pybind_extension(
+    name = "spatialgl/_optics_native",
+    srcs = ["optics_bindings.cc"],
+    visibility = ["//visibility:public"],
+    deps = ["//:optics"],
+)
