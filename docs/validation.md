@@ -1,31 +1,44 @@
-# Validation · 2026-10-03
+# Validation · C++/Python migration · 2026-10-03
 
-## Project checks
+## Bazel checks
 
-`npm run check` passed: **20 tests**, strict TypeScript checking, Vite demo build, and declaration-emitting headless library build.
+`bazel test //... --test_output=errors` passed all three test targets:
 
-The tests cover world support, projector pixels and quantization, frustum clipping, source-to-target occlusion, multiple-projector fallback, monitor preference, raster pixel conflict, drone capacity and primitive compatibility, presentation time and latency, bounded motion, step-size consistency, stale provenance, expiry, full replacement clears, superseded-scene expiry, removed-but-still-emitting outputs, independent device clocks, a fourth custom command schema, calibration validation, and malformed time/device inputs.
+- `//:core_test`: 25 native C++ checks.
+- `//python:api_test`: 6 Python/native binding tests.
+- `//python:demo_test`: 6 experiment/view/server tests.
 
-`npm run simulate` passed. A point emitter starts pending, moves at 1 m/s after 100 ms delivery latency, reaches its target at 1.1 s, and has no visible output after the scene expires at 3 s.
+The 37 checks cover support constraints, projector pixel quantization, frustum and occlusion, projector fallback, monitor preference, pixel conflicts, drone capacity and motion, scheduling and command latency, expiry and supersession, pending clears and stale outputs, independent clocks, custom C++ backend commands, invalid inputs, backend/input lifetime isolation, sample budgets, JSON conversion, Python-generated scenes, standalone view escaping, local HTTP trace export, invalid reset preservation, and an occluder that actually intersects the default projection paths.
 
-## Browser checks
+`clang-format --dry-run --Werror` passed for the C++ header, implementation, native tests and Python bindings. `git diff --check` passed.
 
-The actual local demo was opened in the Codex in-app browser. The 3D room, surfaces, projector sources, desired samples, actual samples, position errors, diagnostics, and pause/step controls rendered correctly.
+## Python execution
 
-- A free-space Patch produced 40 unrealizable samples with backend-specific reasons.
-- Three free-space Points with one drone produced two capacity failures.
-- The default mixed scene routed wall graphics to projectors, screen graphics to the monitor, and airborne Points to the drone backend.
-- The record-save button wrote `spatialgl-trace.json` into Downloads. Its parsed JSON contained `schemaVersion: 1` and 125 observations. Browser download-event automation timed out, but the actual saved file was verified directly.
-- A screenshot of the final demo is saved locally at `.artifacts/simulator.jpg` (generated, gitignored).
+- `bazel run //python:simulate`: calls the real compiled C++ extension. A light is initially pending, starts moving after 100 ms command latency, reaches its target at 1.1 s, and has no visible output at the 3 s expiry.
+- `bazel run //python:python -- examples/hello.py`: executes a user Python script in the ABI-matched Bazel runtime, prints the native tracking/error observation and writes `.artifacts/hello.html`.
+- `bazel run //python:demo -- --output .artifacts/python-simulator.html`: writes a standalone HTML observation of the mixed scene. Output paths resolve against the user's original working directory.
+- `bazel run //python:demo -- --port 5188`: serves a Python-owned live experiment on loopback. The HTTPServer serializes C++ runtime access.
 
-The visual checks cover the desktop viewport. Narrow-screen layout is provided by CSS but was not separately inspected.
+Bazel 9.2.0 and the macOS arm64 C++ toolchain were used. rules_python supplies Python 3.13 for both the extension and the Python launchers. System Python 3.14 is not used to import the Python 3.13 extension. Other platforms were not tested.
+
+## Browser verification
+
+The actual Python lab was opened in the Codex in-app browser. Its room, display surfaces, projector origins, desired samples, actual outputs, error lines and diagnostic table were visually inspected.
+
+- Free-space Patch: 40 unrealizable samples with per-backend support/primitive reasons.
+- Three free-space Points and one drone: two capacity failures.
+- Mixed scene with occlusion: 40 wall-patch samples could not be realized; both projectors reported occlusion while the monitor and airborne emitters continued displaying their supported content.
+- Removing the occluder restored the mixed scene without those support failures.
+- Pause, 100 ms step, scene selection, drone count, occlusion controls and persisted settings after page reload were exercised.
+
+The updated viewer uses Canvas only for camera projection and drawing. No physical simulation runs in browser JavaScript. A final screenshot is stored locally at `.artifacts/python-simulator.jpg` (generated, gitignored).
+
+Static view generation was verified by execution and HTML-content tests; its separate browser view was not inspected. Narrow-screen CSS is present but was not separately inspected. Trace-download behavior is covered by the HTTP integration test; the new browser download button was not separately exercised.
 
 ## Workspace integration
 
-SpatialGL is registered in `workspace.yaml` as an active local repository without a remote URL. The required active-cluster task rules were added, and the rules-file count test was intentionally updated from 11 to 12.
+The existing SpatialGL registration now names the Bazel-built C++ contract and Python API. Cluster execution rules now require `bazel test //...`. The mandatory workspace `scripts/test-workspace-tools` completed successfully in the isolated test environment prepared for the initial project creation.
 
-The mandatory `scripts/test-workspace-tools` completed successfully in an isolated Python environment with pytest, PyYAML, and editable blacksmith/anvil/foreman dependencies. Earlier runs exposed missing local Python dependencies and the initially absent SpatialGL rules file; both were resolved before the passing run.
+## Model limits
 
-## Limits
-
-The Vite build emits a bundle-size advisory for the Three.js viewer (~576 kB minified, ~145 kB gzipped); the build succeeds. The headless library imports no Three.js code. These checks validate the geometry/time model and interfaces, not physical hardware performance or optical/flight fidelity.
+These checks validate the geometry/time model and language boundary, not optical radiometry, flight dynamics or real hardware. The standalone native extension is tied to the configured Python ABI; pip/notebook wheels remain future work. Same-instance native calls require external serialization when used from multiple threads.
