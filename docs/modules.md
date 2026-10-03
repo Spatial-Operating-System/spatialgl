@@ -16,11 +16,20 @@ observations live in `//libs/simulation:simulation`.
 | `//libs/optics:optics` | Typed world, target, rig, policy contracts and validation | `//:optics_headers` |
 | `//libs/simulation:simulation` | Deterministic geometry sampling, resource allocation, timing, composition, observations | optics |
 | `//:optics` | Public typed API aggregate | optics, simulation |
+| `//libs/raster:raster` | Fixed-device snapshot projection, homography, RGB sample footprints and image export | optics headers |
+| `//libs/drivers/glfw:glfw_output` | Optional shared-runtime display discovery, window presentation and host-polled expiry | raster, vendored GLFW declarations |
 
 The public C ABI is under `include/spatialgl/capi/`; its adapter and the Python
 binding are separate targets. They copy typed values and call the C++ core.
 The simulator owns geometry, sampling, allocation, device timing and predicted
 observations.
+
+The raster compiler consumes the simulator's already-composed contributions;
+it does not repeat allocation, visibility or scheduling. The GLFW driver is a
+separate transport target and loads a shared runtime only when invoked. Python
+exposes these modules as `spatialgl.raster` through `_raster_native`. Existing
+aggregate targets and the C ABI do not gain a GLFW runtime requirement. See
+[fixed raster output](raster-output.md) for the API and sampled-coverage limits.
 
 The directory layouts are structural references, not dependencies or copied
 code: [bgfx](https://github.com/bkaradzic/bgfx) illustrates a standalone C99

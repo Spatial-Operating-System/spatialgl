@@ -1,4 +1,4 @@
-# Validation · modular optics and C ABI · 2026-10-03
+# Validation
 
 ## Build prerequisites
 
@@ -19,7 +19,46 @@ without visible layout overlap. A text scan found no remaining Korean in the
 current tracked documentation or application sources. Historical commits are
 preserved and may contain the original Korean text.
 
-## Current implementation
+## Current implementation: fixed raster output · 2026-10-04
+
+`bazel test //... --test_output=errors` passed all nine test targets on macOS
+arm64 with Bazel 9.2.0 and the configured Python 3.13 runtime. The seven optics,
+compatibility and C ABI targets below remain green. Two targets were added:
+
+- `//tests/raster:raster_test`: independent expected pixel positions, aspect,
+  clipping, linear/sRGB colors, coincident/colliding samples, four-point fitting,
+  singular and rescaled homographies, active/pending apps, availability,
+  cancellation, leases, revision checks, malformed inputs and PPM export.
+- `//python:raster_test`: immutable RGB copies, actual cancellation, calibration,
+  CLI image/metadata export, invalid calibration input, a fake-clock regression
+  for the live loop's presentation timestamp and cleanup after blackout failure.
+
+The default demo exported a 640×480 PPM and predicted-output metadata under
+`.artifacts/raster-demo`. The ordinary tests and export did not initialize GLFW.
+The new native sources and binding passed `clang-format --dry-run --Werror`,
+and the edited BUILD files passed `buildifier -mode=check`.
+
+For an opt-in transport probe, GLFW 3.4 was built locally as a shared library
+from its official source archive. Windowed demo runs completed. A separate
+native-API probe enumerated two displays and read back a 256×192 Retina window
+framebuffer: 14,004 RGB channels were nonzero after a valid sampled frame and
+all channels were zero after expiry, invalid polling time or a future-frame
+rejection. Closing one of two windows, enumerating displays, and rejecting an
+unavailable monitor index preserved presentation on the other window. A worker
+thread call was rejected. Forced OpenGL errors during presentation and blackout
+raised an error and recovered to a black framebuffer. These checks used the
+actual GLFW/OpenGL transport; they are not part of the headless test suite.
+Generated images and the local
+probe are gitignored artifacts.
+
+The native window was unavailable to the UI automation inventory, so no
+independent visual inspection of the window was recorded. Fullscreen on a
+selected output, Linux/Windows execution, a connected projector, measured
+registration, photometry and optical blanking timing were not tested. A buffer
+readback establishes software rendering, not light arrival at a target. See
+[fixed raster output](raster-output.md) for execution and lease limitations.
+
+## Modular optics and C ABI · 2026-10-03
 
 `bazel test //... --test_output=errors` passed all seven test targets:
 
@@ -86,8 +125,10 @@ angular speed and settling, and galvo programs use ordered samples, blank
 travel and dwell; neither models actuator acceleration or analog corner
 dynamics. Position error is unavailable. Required group triggers, nonstable
 traversal and galvo fill remain explicitly unsupported. The allocator is a
-deterministic greedy scheduler, not an optimal solver. There is no hardware
-transport, measured optical output or certified hardware timing guarantee.
+deterministic greedy scheduler, not an optimal solver. Fixed raster host
+presentation is now available through the experimental GLFW path above. There
+is no actuator/laser transport, measured optical output or certified hardware
+timing guarantee.
 See [core API](core-api.md) and [C ABI](c-api.md) for the executable contract.
 
 The mandatory workspace suite passed after project registration and the

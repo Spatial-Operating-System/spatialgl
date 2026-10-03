@@ -15,3 +15,13 @@ pybind_extension(
     visibility = ["//visibility:public"],
     deps = ["//:optics"],
 )
+
+pybind_extension(
+    name = "spatialgl/_raster_native",
+    srcs = ["raster_bindings.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//libs/drivers/glfw:glfw_output",
+        "//libs/raster",
+    ],
+)

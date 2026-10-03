@@ -1,0 +1,8 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "glfw_headers",
+    hdrs = ["include/GLFW/glfw3.h"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)

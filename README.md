@@ -88,15 +88,25 @@ bazel run //python:demo -- --output .artifacts/view.html
 
 The viewer explores the original device models. Run `//examples/optics:scenarios` for the newer surface-optics experiments.
 
+## Try display output
+
+Save a sampled grid and marker as an image:
+
+```sh
+bazel run //examples/hardware:raster_demo -- --output .artifacts/raster-demo
+```
+
+With an optional GLFW runtime, add `--window` to show an animated demo on a monitor or HDMI projector. See the [display output guide](docs/raster-output.md) for display selection and manual calibration.
+
 ## Model limits
 
-SpatialGL currently predicts output; hardware drivers and measured optical feedback are planned. Composition uses finite samples, and steering/scanning use simplified dynamics. Filled laser shapes, guaranteed hardware synchronization, and certified position-error bounds are unsupported. See the [model assumptions and limits](docs/core-api.md) for the full contract.
+SpatialGL predicts optical output and can present those samples on a fixed raster display. Actuator/laser drivers and measured optical feedback are planned. Composition uses finite samples, and steering/scanning use simplified dynamics. Filled laser shapes, guaranteed hardware synchronization, and certified position-error bounds are unsupported. See the [model assumptions and limits](docs/core-api.md) for the full contract.
 
 ## Build a physical demo
 
 The [hardware demo guide](docs/hardware-demos.md) compares 11 configurations, including HDMI projectors, printed pan/tilt mounts with DYNAMIXEL or stepper control, Helios/Ether Dream/IDN laser controllers, and DMX moving lights. It links inspected upstream SDKs and fabrication references, maps concrete control calls to future drivers, and defines six experiments with measurable outcomes.
 
-The recommended sequence is one HDMI projector, a printed steerable mount, then an ILDA scanning setup. These are researched integration candidates; SpatialGL does not yet ship hardware drivers. Hardware dependencies and device acceptance tests will remain opt-in.
+The recommended sequence is one HDMI projector, a printed steerable mount, then an ILDA scanning setup. The fixed display prototype is available; the remaining device drivers are integration candidates. Hardware dependencies and device acceptance tests remain opt-in.
 
 ## Development
 
@@ -105,6 +115,7 @@ Run `bazel test //...` for changes. See the [contributor instructions](AGENTS.md
 ## Documentation
 
 - [App API](docs/python-api.md)
+- [Display output](docs/raster-output.md)
 - [Core API and model assumptions](docs/core-api.md)
 - [Native integration](docs/c-api.md)
 - [Architecture](docs/architecture.md)

@@ -1,1 +1,5 @@
 * text=auto eol=lf
+
+# Preserve the unmodified upstream GLFW header and license, including whitespace.
+third_party/glfw/include/GLFW/glfw3.h -whitespace
+third_party/glfw/LICENSE.md -whitespace

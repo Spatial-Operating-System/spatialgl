@@ -1,8 +1,10 @@
 # Hardware demo candidates
 
-Research date: **2026-10-03**. These are integration candidates, not supported
-SpatialGL drivers. Upstream SDKs, headers, protocols, and fabrication references
-were inspected; no device was connected or tested. SDK capability does not
+Research date: **2026-10-03**. Upstream SDKs, headers, protocols, and fabrication
+references were inspected. H01 now has an experimental sampled raster compiler
+and optional GLFW presentation path; see [fixed raster output](raster-output.md).
+The remaining entries are integration candidates. No projector, actuator or
+laser has been connected or optically measured. SDK capability does not
 establish achievable optical accuracy, latency, or mechanical payload.
 
 ## Recommended starting rig
@@ -24,13 +26,14 @@ display, vendor SDK installations, or hardware purchases.
 
 ## Shortlist
 
-“Fit” describes the current simulator vocabulary, not hardware support.
+"Fit" describes the current simulator vocabulary. Only H01 has an output
+prototype; it has not been validated on the listed projector.
 Effort is relative engineering judgment: calibration and fabricated mechanics
 can dominate a small SDK adapter.
 
 | ID | Concrete configuration | Reusable control software | Fit and demo | Effort / main gap |
 | --- | --- | --- | --- | --- |
-| H01 | Existing HDMI projector or monitor; compact reference: ViewSonic M1 mini Plus | [GLFW](https://www.glfw.org/docs/latest/monitor_guide.html), [OpenCV](https://docs.opencv.org/4.x/d9/dab/tutorial_homography.html) | `FixedRaster`: place a marker/grid on a wall or tabletop | Low; raster compiler and calibrated warp |
+| H01 | Existing HDMI projector or monitor; compact reference: ViewSonic M1 mini Plus | [GLFW](https://www.glfw.org/docs/latest/monitor_guide.html), [OpenCV](https://docs.opencv.org/4.x/d9/dab/tutorial_homography.html) | `FixedRaster`: experimental sampled marker/grid output and manual planar warp | Low; camera calibration and physical validation remain |
 | H02 | Two independently connected HDMI projectors + camera | Same display/calibration stack | Two `FixedRaster` devices: overlap, ownership, handoff, light mixing | Medium; physical overlap and photometry |
 | H03 | Small HDMI projector + 2× XL430-W250-T + U2D2 + printed cradle | [DYNAMIXEL SDK](https://github.com/ROBOTIS-GIT/DynamixelSDK) plus GLFW | `SteerableRaster`: alternate labels between two panels | Medium; kinematics, pose feedback, settle gate |
 | H04 | Stationary HDMI projector + front-surface mirror + two servo axes + printed mirror holder | Same DYNAMIXEL SDK | Steerable raster with a folded optical path; lighter moving assembly | Higher; reflected-ray calibration, clipping, focus |
@@ -57,9 +60,11 @@ provide a compact mechanical reference: HDMI input, 854×480 native resolution,
 or mounting compatibility guarantee. An already-owned projector is preferable
 for H01. Lock focus and keystone settings during calibration.
 
-The missing SpatialGL component is a raster compiler: surface graphics must
-become an image with clipping, coverage, warp, and transfer-function correction.
-Current sparse sample events are insufficient for filled patches. A buffer
+SpatialGL's first raster compiler maps predicted samples into an RGB image
+with clipping, a manual homography, and linear/sRGB encoding. It can export an
+image or present it through GLFW. Sparse sample footprints are insufficient
+for continuous filled patches, and encoding is not measured transfer-function
+correction. Camera calibration remains a separate integration step. A buffer
 swap confirms a host presentation operation; a camera or optical timing sensor
 is needed to measure when light reaches the target. Black pixels also leave a
 projector-dependent residual light level.

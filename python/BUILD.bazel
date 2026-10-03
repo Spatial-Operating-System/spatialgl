@@ -8,9 +8,11 @@ py_library(
     data = [
         "spatialgl/__init__.pyi",
         "spatialgl/optics.pyi",
+        "spatialgl/raster.pyi",
         "spatialgl/viewer.html",
         "//bindings/python:spatialgl/_native",
         "//bindings/python:spatialgl/_optics_native",
+        "//bindings/python:spatialgl/_raster_native",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -73,4 +75,15 @@ py_test(
     ],
     main = "tests/test_demo.py",
     deps = [":spatialgl"],
+)
+
+py_test(
+    name = "raster_test",
+    size = "small",
+    srcs = ["tests/test_raster.py"],
+    main = "tests/test_raster.py",
+    deps = [
+        ":spatialgl",
+        "//examples/hardware:raster_demo_lib",
+    ],
 )

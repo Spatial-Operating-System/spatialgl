@@ -10,4 +10,4 @@ Independent repository in the dostos workspace. Keep implementation and code-adj
 - Extend C++ Backend with capability evaluation, native command encoding, observations, reset and fresh-instance clone semantics. Report unsupported geometry and observed error.
 - Runtime copies submitted values and owns cloned backends. Serialize calls on each runtime instance; no thread safety is promised.
 - Run `bazel test //...` for changes. Check the browser for viewer changes. Use clang-format with the checked-in style for C++.
-- Distinguish simulator assumptions from measured hardware performance. Real-world device control and its safety contracts are future work.
+- Distinguish simulator assumptions from measured hardware performance. Fixed raster host presentation is experimental; actuator/laser control and its safety contracts remain future work.

@@ -21,6 +21,22 @@ cc_library(
 )
 
 cc_library(
+    name = "raster_headers",
+    hdrs = ["include/spatialgl/raster.h"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [":optics_headers"],
+)
+
+cc_library(
+    name = "glfw_output_headers",
+    hdrs = ["include/spatialgl/glfw_output.h"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [":raster_headers"],
+)
+
+cc_library(
     name = "optics",
     visibility = ["//visibility:public"],
     deps = [

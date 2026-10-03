@@ -61,10 +61,14 @@ replaced by surface projection.
 
 The [hardware demo guide](hardware-demos.md) lists concrete devices, printable
 mechanics, inspected upstream libraries, driver mappings, and acceptance data.
-No hardware adapter has been implemented or validated yet.
+H01 has an experimental [sampled raster output path](raster-output.md): native
+snapshot projection, manual four-point warp, image export, and optional GLFW
+window/fullscreen presentation. Headless checks pass; no projector registration,
+photometry or physical timing has been measured. Continuous filled raster
+coverage and camera acquisition remain open.
 
-1. H01: one HDMI projector/monitor through a C++ raster compiler and GLFW;
-   camera-based planar calibration with OpenCV.
+1. H01: validate the output prototype on one HDMI projector/monitor; add
+   camera-based planar calibration with OpenCV and independent registration checks.
 2. H03/H05: a printed pan/tilt mount, initially with move/settle/project behavior;
    prefer the DYNAMIXEL C++ SDK when measured joint feedback is needed.
 3. H06: a Helios/ILDA scanner; evaluate the MIT C++ Libera transport layer and

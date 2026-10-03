@@ -11,3 +11,10 @@ Composition (`Composition`) controls display-list layering. Physical output mix 
 `PipelineState.max_position_error` defaults to zero, meaning no certified bound is requested. A positive value is unsupported because the simulator cannot certify target-position error. `TraversalState.minimum_duty` and `max_dark_gap` are checked against predicted cycle metrics and produce a no-plan diagnostic when unmet. `DrawCall.closed` closes a polyline, and each device's `sample_budget` limits the target sample count it can program.
 
 Run all six executable scenario checks with `bazel run //python:optics_scenarios`; `bazel test //python:optics_scenario_test` runs the same acceptance assertions. The existing authoring API, headless demo, and live viewer remain available with `bazel run //python:python -- script.py` and `bazel run //python:demo -- --port 5188`.
+
+`spatialgl.raster` adds a separate output surface: `compile(snapshot, device,
+calibration)` returns an immutable RGB frame, `write_ppm` exports it, and
+`GlfwOutput` optionally presents it. `Calibration` and `calibration_from_corners`
+provide a manual planar warp. Native snapshot contributions remain the source
+of rendering decisions. See [fixed raster output](raster-output.md) for the
+demo, main-thread presentation, leases and finite-sample limitations.
