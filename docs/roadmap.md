@@ -57,9 +57,24 @@ Acceptance: the same scene reports feasible content, timing cost, and spatial
 error comparably across techniques. Free-space patches must not be silently
 replaced by surface projection.
 
-## Later: the first hardware backend
+## Next hardware milestone: fixed output, steering, then scanning
 
-Start with one fixed monitor or projector. Implement world/device calibration,
-driver transport, measured feedback, watchdog/expiry, and command
-acknowledgements. Compare predicted and measured output. Drone hardware follows
-only after a separately validated control and safety layer exists.
+The [hardware demo guide](hardware-demos.md) lists concrete devices, printable
+mechanics, inspected upstream libraries, driver mappings, and acceptance data.
+No hardware adapter has been implemented or validated yet.
+
+1. H01: one HDMI projector/monitor through a C++ raster compiler and GLFW;
+   camera-based planar calibration with OpenCV.
+2. H03/H05: a printed pan/tilt mount, initially with move/settle/project behavior;
+   prefer the DYNAMIXEL C++ SDK when measured joint feedback is needed.
+3. H06: a Helios/ILDA scanner; evaluate the MIT C++ Libera transport layer and
+   the manufacturer's SDK without moving world-space planning into either one.
+4. D4/D5: mixed raster/vector rigs and multiple outputs, with queue-tail,
+   handoff, cancellation, clock uncertainty, and measured photometric records.
+
+Define a versioned boundary for raster frames, joint trajectories, and laser
+sample blocks. Add device identity, bounded queues, feedback, watchdog/expiry,
+and separate submission/playback/measurement receipts. Hardware dependencies
+and device acceptance tests remain opt-in; default simulator tests require no
+devices. Drone hardware follows only after a separately validated control and
+safety layer exists.

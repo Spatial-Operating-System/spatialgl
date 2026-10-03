@@ -141,6 +141,12 @@ SpatialGL currently predicts output; it does not control hardware or report meas
 
 Galvo fills, required hardware synchronization, nonstable traversal, and certified position-error bounds are explicitly unsupported. Camera reconstruction, observer/eye/focus channels, volumetric rendering, audio, haptics, hardware transport, and hardware acknowledgements remain future capabilities. Simulator expiry and availability states do not establish hardware guarantees.
 
+## Build a physical demo
+
+The [hardware demo guide](docs/hardware-demos.md) compares 11 configurations, including HDMI projectors, printed pan/tilt mounts with DYNAMIXEL or stepper control, Helios/Ether Dream/IDN laser controllers, and DMX moving lights. It links inspected upstream SDKs and fabrication references, maps concrete control calls to future drivers, and defines six experiments with measurable outcomes.
+
+The recommended sequence is one HDMI projector, a printed steerable mount, then an ILDA scanning setup. These are researched integration candidates; SpatialGL does not yet ship hardware drivers. Hardware dependencies and device acceptance tests will remain opt-in.
+
 ## Development
 
 Run `bazel test //...` for changes. The seven test targets cover the compatibility runtime, optics, Python API/viewer, constructed multi-device scenarios, an actual C11 caller, and C/C++ parity. Format C++ with the checked-in `.clang-format` and Bazel BUILD files with Buildifier. See [contributor instructions](AGENTS.md).
