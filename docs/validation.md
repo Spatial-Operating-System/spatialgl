@@ -1,5 +1,13 @@
 # Validation · modular optics and C ABI · 2026-10-03
 
+## Build prerequisites
+
+Install [Bazelisk](https://github.com/bazelbuild/bazelisk) or Bazel 9.2.0 and a
+C++20 toolchain. On macOS, install the Command Line Tools. Bazel downloads the
+locked dependencies and a matching Python 3.13 runtime. Run app scripts through
+`bazel run //python:python -- script.py` so the interpreter matches the native
+extension. Standalone pip wheels and notebook installation remain future work.
+
 ## Public repository presentation
 
 The README, roadmap, compatibility architecture, design audit, and live viewer
