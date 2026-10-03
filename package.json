@@ -1,0 +1,30 @@
+{
+  "name": "spatialgl",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "World-coordinate graphics realized through physical display backends",
+  "exports": {
+    ".": {
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build && tsc -p tsconfig.lib.json",
+    "test": "vitest run",
+    "check": "npm test && npm run build",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "simulate": "npm run build:lib && node examples/headless.mjs"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.186.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.2",
+    "vitest": "5.0.3"
+  }
+}
