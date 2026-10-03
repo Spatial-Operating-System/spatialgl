@@ -9,6 +9,10 @@ color-only refinement for light and dark backgrounds. No third-party logo was
 supplied as a reference. The original outputs remain outside the repository;
 the selected final asset is copied here.
 
+The organization uses a separate [Spatial OS identity](spatial-os.md), with
+spatial frames and layers rather than light paths. Its wordmark and profile
+avatar are stored alongside this project logo.
+
 ## Generation prompt
 
 ```text
