@@ -1,5 +1,16 @@
 # Validation · modular optics and C ABI · 2026-10-03
 
+## Public repository presentation
+
+The README, roadmap, compatibility architecture, design audit, and live viewer
+were translated into English for public publication. A generated transparent
+logo and its prompts are stored in `docs/assets/`. All seven Bazel test targets
+passed after the viewer translation. The English live viewer was checked in
+the in-app browser; labels, controls, scene, and observation table rendered
+without visible layout overlap. A text scan found no remaining Korean in the
+current tracked documentation or application sources. Historical commits are
+preserved and may contain the original Korean text.
+
 ## Current implementation
 
 `bazel test //... --test_output=errors` passed all seven test targets:
